@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NutriWords</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'Nunito',sans-serif;color:#3B3355;background:#FFF9F2;overflow:hidden}
+h1,h2,h3{font-family:'Fredoka',sans-serif;font-weight:600;line-height:1.1}
+button{font-family:inherit;cursor:pointer}
+.deck{position:relative;height:100%;width:100%}
+.slide{position:absolute;inset:0;padding:22px 16px 120px;opacity:0;pointer-events:none;transform:translateX(40px) scale(.98);transition:opacity .45s,transform .45s;overflow-y:auto;display:flex;
+ background:radial-gradient(circle at 10% 10%,var(--l) 0 90px,transparent 91px),radial-gradient(circle at 92% 30%,var(--l) 0 60px,transparent 61px),radial-gradient(circle at 85% 95%,var(--l) 0 110px,transparent 111px),var(--bg)}
+.slide.on{opacity:1;pointer-events:auto;transform:none}
+.slide.prev{transform:translateX(-40px) scale(.98)}
+.box{width:min(700px,100%);margin:auto;text-align:center;position:relative}
+.spark{position:absolute;font-size:22px;animation:tw 2.4s ease-in-out infinite;pointer-events:none}
+@keyframes tw{50%{transform:scale(1.4) rotate(20deg);opacity:.5}}
+
+/* COVER */
+.cover{background:linear-gradient(160deg,#FFB5D0 0%,#FFD6A5 35%,#B9F3C9 70%,#A8D8FF 100%);padding-bottom:30px}
+.cover .fl{position:absolute;font-size:42px;animation:fl 5s ease-in-out infinite}
+@keyframes fl{50%{transform:translateY(-14px) rotate(8deg)}}
+.cover h1{font-size:clamp(54px,13vw,100px);color:#fff;text-shadow:0 5px 0 #E86A9E,0 9px 0 rgba(0,0,0,.08)}
+.cover h1 b{color:#FFE066;text-shadow:0 5px 0 #F0A500,0 9px 0 rgba(0,0,0,.08)}
+.mascot{font-size:70px;animation:bounce 2s ease-in-out infinite;display:inline-block}
+@keyframes bounce{50%{transform:translateY(-10px)}}
+.student{margin-top:18px;background:#fff;border-radius:30px;padding:18px 26px;display:inline-block;box-shadow:0 8px 0 #F7C6DA}
+.student small{display:block;font-weight:800;letter-spacing:3px;font-size:13px;color:#E86A9E}
+.student strong{display:block;font-family:'Fredoka';font-size:clamp(21px,4.6vw,30px);margin:6px 0;color:#3B3355}
+.student span{font-weight:700;font-size:16px;color:#25A563}
+.teacher{margin-top:14px;padding-top:12px;border-top:3px dashed #F7C6DA}
+.teacher strong{font-size:clamp(19px,4vw,24px);color:#4A74E0}
+.howto{margin-top:18px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.howto span{background:rgba(255,255,255,.75);border-radius:99px;padding:7px 14px;font-weight:800;font-size:14px}
+.start{margin-top:22px;background:#FF7BAC;color:#fff;border:none;border-radius:99px;padding:15px 36px;font-size:20px;font-weight:800;box-shadow:0 6px 0 #D9558A}
+.start:active{transform:translateY(4px);box-shadow:none}
+
+/* RULE */
+.big-emo{font-size:72px;animation:bounce 2s ease-in-out infinite;display:inline-block}
+.rule h2{font-size:clamp(30px,6vw,46px);margin:6px 0}
+.sub{font-size:18px;font-weight:700;color:#7A7194}
+.flip{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:16px 0}
+.w{padding:14px 22px;border-radius:22px;font-family:'Fredoka';font-size:clamp(22px,5vw,32px);font-weight:600}
+.w small{display:block;font-family:'Nunito';font-size:11px;font-weight:800;letter-spacing:1px;opacity:.75}
+.wa{background:#FFE0EC;color:#E0548C;box-shadow:0 5px 0 #F7C6DA}.wb{background:#DCEBFF;color:#3C67D8;box-shadow:0 5px 0 #BCD5FA}
+.hint{margin-top:10px;background:#fff;border-radius:18px;padding:12px 18px;font-weight:800;display:inline-block;box-shadow:0 5px 0 #F3E3B5}
+
+/* WORD SLIDE */
+.top{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.tag{font-weight:800;border-radius:99px;padding:6px 14px;font-size:13px;background:var(--c);color:#fff;box-shadow:0 3px 0 rgba(0,0,0,.12)}
+.tag.l{background:#fff;color:var(--c)}
+.title{font-size:clamp(32px,7.5vw,54px);color:var(--c);text-shadow:0 3px 0 #fff}
+.es-t{display:inline-block;margin-top:6px;font-size:clamp(16px,3.6vw,20px);font-weight:800;color:#7A7194;background:#fff;border-radius:99px;padding:4px 14px}
+
+.art{position:relative;width:210px;height:210px;margin:18px auto 8px}
+.blob{position:absolute;inset:0;border-radius:44% 56% 52% 48%/48% 42% 58% 52%;background:radial-gradient(circle at 30% 28%,#fff 0%,var(--l) 50%,var(--c) 150%);box-shadow:0 10px 0 rgba(0,0,0,.06);animation:morph 7s ease-in-out infinite}
+@keyframes morph{50%{border-radius:56% 44% 42% 58%/55% 58% 42% 45%}}
+.art .m{position:absolute;inset:0;display:grid;place-items:center;font-size:100px}
+.slide.on .art .m{animation:pop .7s}
+@keyframes pop{0%{transform:scale(.3) rotate(-20deg)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+.art .s{position:absolute;font-size:34px;background:#fff;border-radius:50%;width:60px;height:60px;display:grid;place-items:center;box-shadow:0 5px 0 var(--l)}
+.art .s1{top:-4px;right:-16px;animation:fl 4s ease-in-out infinite}
+.art .s2{bottom:6px;left:-20px;animation:fl 4.5s ease-in-out infinite .8s}
+.art .s3{bottom:-8px;right:4px;animation:fl 5s ease-in-out infinite .3s;width:50px;height:50px;font-size:26px}
+
+.say{display:inline-flex;align-items:center;gap:8px;margin-top:10px;background:#fff;border:3px solid var(--c);border-radius:99px;padding:8px 18px;font-weight:800;font-size:15px;color:#3B3355;box-shadow:0 4px 0 var(--l)}
+.say:active{transform:translateY(3px);box-shadow:none}
+
+.concept{margin-top:16px;background:#fff;border-radius:28px;padding:16px 20px;box-shadow:0 7px 0 var(--l);text-align:left;position:relative}
+.concept:before{content:"✨";position:absolute;top:-14px;right:16px;font-size:26px}
+.lbl{font-weight:800;font-size:12px;letter-spacing:1.5px;color:var(--c)}
+.concept p{font-size:clamp(17px,3.6vw,21px);font-weight:700;margin-top:4px;line-height:1.4}
+.concept p.sp{font-size:clamp(14px,3vw,16px);color:#7A7194;font-weight:600;font-style:italic;margin-top:6px}
+
+details{margin-top:12px;border-radius:24px;text-align:left;overflow:hidden;background:#fff;box-shadow:0 5px 0 var(--dl)}
+summary{list-style:none;cursor:pointer;padding:12px 14px;font-family:'Fredoka';font-size:18px;font-weight:600;display:flex;align-items:center;gap:10px;background:var(--dl);color:#3B3355}
+summary::-webkit-details-marker{display:none}
+summary .ic{width:38px;height:38px;border-radius:14px;background:#fff;display:grid;place-items:center;font-size:21px;flex:0 0 auto}
+summary small{font-family:'Nunito';font-size:12px;font-weight:700;color:#7A7194;display:block}
+summary .ar{margin-left:auto;width:30px;height:30px;border-radius:50%;background:var(--dc);color:#fff;display:grid;place-items:center;font-size:14px;transition:transform .3s;flex:0 0 auto}
+details[open] summary .ar{transform:rotate(180deg)}
+.dc{padding:14px}
+details[open] .dc{animation:drop .35s ease}
+@keyframes drop{from{opacity:0;transform:translateY(-8px)}}
+.d-how{--dl:#E5F0FF;--dc:#4A7CF0}
+.d-key{--dl:#FFF1C9;--dc:#E0A800}
+.d-ex{--dl:#DDF6E8;--dc:#25A563}
+.d-fun{--dl:#FFE0EC;--dc:#E0548C}
+
+.steps{display:flex;align-items:stretch;gap:6px;flex-wrap:wrap;justify-content:center}
+.step{flex:1 1 90px;background:#F5F9FF;border-radius:18px;padding:10px 8px;text-align:center;font-weight:800;font-size:14px;position:relative}
+.step b{display:block;font-size:30px;margin-bottom:4px}
+.step small{display:block;font-weight:700;color:#7A7194;font-size:12px;margin-top:2px}
+.arrowr{align-self:center;font-size:18px;color:#4A7CF0;font-weight:800}
+
+.pts{display:grid;gap:8px}
+.pt{display:flex;gap:10px;align-items:center;background:#FFFBEF;border-radius:16px;padding:10px 12px;font-weight:700;font-size:15.5px}
+.pt b{font-size:24px;line-height:1;width:34px;text-align:center;flex:0 0 auto}
+.exen{font-weight:800;font-size:17px;background:#F3FCF7;border-radius:16px;padding:12px}
+.exen mark{background:var(--l);color:var(--c);padding:0 6px;border-radius:8px}
+.exes{color:#7A7194;font-style:italic;font-size:15px;margin-top:6px;padding:0 4px}
+.fun{display:flex;gap:12px;align-items:center;font-weight:700;font-size:16px}
+.fun b{font-size:40px;flex:0 0 auto}
+.fun i{display:block;color:#7A7194;font-weight:600;font-size:14px;margin-top:4px}
+
+/* END */
+.end h2{font-size:clamp(38px,8vw,60px);color:#E0548C}
+.end p{font-size:18px;font-weight:800;color:#7A7194;margin-top:6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:16px 0}
+.chips span{background:#fff;border-radius:99px;padding:6px 12px;font-weight:800;font-size:13px;box-shadow:0 3px 0 #EADCF7}
+
+/* CONTROLS */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:10;padding:14px 16px 16px;background:linear-gradient(180deg,rgba(255,249,242,0),rgba(255,249,242,.97) 40%)}
+.prog{height:10px;background:#F1E6EF;border-radius:99px;overflow:hidden;max-width:700px;margin:0 auto 10px}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#FF7BAC,#FFC93C,#3DBE7A,#4A7CF0,#8E5CF0);transition:width .4s;border-radius:99px}
+.ctrl{display:flex;justify-content:center;align-items:center;gap:14px}
+.nb{width:56px;height:56px;border-radius:50%;border:none;background:#FF7BAC;color:#fff;font-size:22px;font-weight:800;box-shadow:0 5px 0 #D9558A}
+.nb:active{transform:translateY(4px);box-shadow:none}
+.nb:disabled{opacity:.3}
+.count{font-weight:800;min-width:72px;text-align:center;background:#fff;border-radius:99px;padding:6px 10px}
+.cover-on .bar{display:none}
+</style>
+</head>
+<body>
+<div class="deck" id="deck"></div>
+<div class="bar">
+  <div class="prog"><i id="prog"></i></div>
+  <div class="ctrl">
+    <button class="nb" id="prev" aria-label="Previous">◀</button>
+    <span class="count" id="count"></span>
+    <button class="nb" id="next" aria-label="Next">▶</button>
+  </div>
+</div>
+<script>
+const C=[["#F07A2B","#FFE3CF","#FFF7F0"],["#22A563","#D3F5E2","#F2FCF6"],["#4A74E0","#DCE7FF","#F4F7FF"],["#E0548C","#FFDDEA","#FFF5F9"],["#8257E6","#EADFFF","#F9F5FF"]];
+
+/* how: visual mini-process [emoji,label,small] */
+const W=[
+{e:["🔥","🏃‍♀️","⚡","💓"],cat:"Body & Energy",en:"Energy expenditure",es:"Gasto energético",say:"ÉN-er-yi ex-PÉN-di-cher",
+ def:"The total energy (calories) your body uses in one day.",defEs:"La energía total (calorías) que tu cuerpo usa en un día.",
+ how:[["😴","Rest","60–70 %"],["🍽️","Digestion","~10 %"],["🏃‍♀️","Movement","20–30 %"]],
+ pts:[["📈","More muscle = more energy used, even at rest."],["🥵","Fever and injuries increase it."],["⚖️","If you eat more than you spend, you gain weight."]],
+ ex:"Walking every day <mark>increases</mark> energy expenditure.",exEs:"Caminar todos los días aumenta el gasto energético.",
+ fun:["🫀","Your brain uses about 20% of your daily energy!","¡Tu cerebro usa cerca del 20 % de tu energía diaria!"]},
+{e:["🫀","🛌","🫁","🌡️"],cat:"Body & Energy",en:"Basal metabolic rate",es:"Tasa metabólica basal",say:"BÉI-sol me-ta-BÁ-lik réit",
+ def:"The energy your body needs at complete rest just to stay alive.",defEs:"La energía que tu cuerpo necesita en reposo total solo para mantenerse vivo.",
+ how:[["❤️","Heartbeat",""],["🫁","Breathing",""],["🌡️","Temperature",""]],
+ pts:[["🧮","Short form: BMR. Estimated with equations like Harris-Benedict."],["👩","Depends on weight, height, age and sex."],["👴","It goes down with age."]],
+ ex:"We <mark>calculate</mark> the basal metabolic rate of the patient.",exEs:"Calculamos la tasa metabólica basal del paciente.",
+ fun:["😴","Even when you sleep, your body is burning calories!","¡Incluso cuando duermes, tu cuerpo quema calorías!"]},
+{e:["💪","🦴","💧","🫀"],cat:"Body & Energy",en:"Lean body mass",es:"Masa corporal magra",say:"LÍIN BÁ-di MÁS",
+ def:"Everything in your body that is NOT fat.",defEs:"Todo lo que en tu cuerpo NO es grasa.",
+ how:[["💪","Muscles",""],["🦴","Bones",""],["💧","Water",""],["🫀","Organs",""]],
+ pts:[["🏋️‍♀️","Strength training helps keep it."],["🍗","Enough protein protects it."],["🛏️","Long bed rest makes us lose it fast."]],
+ ex:"Exercise <mark>protects</mark> lean body mass.",exEs:"El ejercicio protege la masa corporal magra.",
+ fun:["💧","About 70% of lean body mass is water!","¡Cerca del 70 % de la masa magra es agua!"]},
+{e:["⚖️","🧈","📏","📉"],cat:"Body & Energy",en:"Body fat",es:"Grasa corporal",say:"BÁ-di FÁT",
+ def:"The fat stored in your body, usually shown as a percentage (%).",defEs:"La grasa guardada en tu cuerpo, normalmente en porcentaje (%).",
+ how:[["🔋","Energy store",""],["🛡️","Protects organs",""],["🌡️","Keeps you warm",""]],
+ pts:[["✅","Some fat is necessary for health."],["⚠️","Too much fat around the belly raises disease risk."],["📏","Measured with skinfolds or bioimpedance."]],
+ ex:"Her body fat <mark>decreased</mark> in three months.",exEs:"Su grasa corporal disminuyó en tres meses.",
+ fun:["🧠","Your brain is about 60% fat!","¡Tu cerebro es cerca de 60 % grasa!"]},
+{e:["📓","✏️","🥪","🕐"],cat:"Food & Intake",en:"Food diary",es:"Diario de alimentación",say:"FÚUD DÁI-a-ri",
+ def:"A notebook where you write everything you eat and drink.",defEs:"Un cuaderno donde anotas todo lo que comes y bebes.",
+ how:[["🕐","Time",""],["🥪","Food",""],["🥄","Amount",""],["😊","Feeling",""]],
+ pts:[["📅","Usually 3 days, including one weekend day."],["📱","It can be on paper or in an app."],["🧐","Helps find habits we don't notice."]],
+ ex:"Please <mark>keep</mark> a food diary for three days.",exEs:"Por favor lleve un diario de alimentación por tres días.",
+ fun:["🥛","Careful! Diary = diario 📓 but Dairy = lácteos 🥛","¡Cuidado! Diary = diario, pero Dairy = lácteos."]},
+{e:["🎯","👨‍👩‍👧","🥕","📈"],cat:"Clinical Care",en:"Nutritional intervention",es:"Intervención nutricional",say:"nu-TRÍ-sho-nal in-ter-VÉN-shon",
+ def:"A planned action to improve how a person or a community eats.",defEs:"Una acción planeada para mejorar la alimentación de una persona o comunidad.",
+ how:[["🔍","Assess",""],["📝","Plan",""],["🚀","Act",""],["📊","Evaluate",""]],
+ pts:[["📚","Education: workshops and talks."],["💊","Supplements: iron, vitamin A, formulas."],["🥗","Diet changes: new menus."]],
+ ex:"The intervention <mark>helped</mark> the children gain weight.",exEs:"La intervención ayudó a los niños a ganar peso.",
+ fun:["🌱","Small changes, like adding one fruit a day, can make a big difference!","¡Pequeños cambios, como una fruta más al día, hacen una gran diferencia!"]},
+{e:["🩺","🏥","📋","🍲"],cat:"Clinical Care",en:"Clinical nutrition",es:"Nutrición clínica",say:"KLÍ-ni-kol nu-TRÍ-shon",
+ def:"The area of nutrition that takes care of sick patients in hospitals and clinics.",defEs:"El área de la nutrición que cuida a pacientes en hospitales y clínicas.",
+ how:[["🔍","Screening",""],["🧾","Assessment",""],["🍲","Treatment",""],["🔁","Follow-up",""]],
+ pts:[["🏥","Works with doctors, nurses and pharmacists."],["🧪","Uses lab tests, measurements and diet history."],["🛏️","Helps patients recover faster."]],
+ ex:"I <mark>want to study</mark> clinical nutrition.",exEs:"Quiero estudiar nutrición clínica.",
+ fun:["🏨","Many hospital patients have malnutrition and nobody notices!","¡Muchos pacientes hospitalizados tienen malnutrición y nadie lo nota!"]},
+{e:["🧪","👃","🫃","🥤"],cat:"Clinical Care",en:"Enteral nutrition",es:"Nutrición enteral",say:"ÉN-te-ral nu-TRÍ-shon",
+ def:"Feeding that uses the stomach or intestine, often through a tube.",defEs:"Alimentación que usa el estómago o el intestino, a menudo por sonda.",
+ how:[["🥤","Formula",""],["👃","Tube",""],["🫃","Stomach",""]],
+ pts:[["👃","Nasogastric tube: from the nose to the stomach."],["🥤","Special oral formulas are enteral too."],["✅","First choice when the gut works!"]],
+ ex:"The patient <mark>receives</mark> enteral nutrition by tube.",exEs:"El paciente recibe nutrición enteral por sonda.",
+ fun:["🏛️","'Enteral' comes from Greek 'enteron' = intestine.","'Enteral' viene del griego 'enteron' = intestino."]},
+{e:["💉","🩸","🏥","🧴"],cat:"Clinical Care",en:"Parenteral nutrition",es:"Nutrición parenteral",say:"pa-RÉN-te-ral nu-TRÍ-shon",
+ def:"Feeding given directly into a vein, without using the gut.",defEs:"Alimentación administrada directamente por la vena, sin usar el intestino.",
+ how:[["🧴","Sterile bag",""],["💉","Catheter",""],["🩸","Blood",""]],
+ pts:[["🚫","Used when the gut does NOT work."],["🧪","Mix of glucose, amino acids, lipids, vitamins and minerals."],["⚠️","Needs careful monitoring: infection risk."]],
+ ex:"Parenteral nutrition <mark>goes</mark> into the vein.",exEs:"La nutrición parenteral va a la vena.",
+ fun:["🔤","Para = beside / outside + enteral = intestine → 'outside the gut'.","Para = al lado / fuera + enteral = intestino → 'fuera del intestino'."]},
+{e:["🍽️","🥗","🍎","💧"],cat:"Diet Planning",en:"Dietary guidelines",es:"Guías alimentarias",say:"DÁI-a-te-ri GÁID-lainz",
+ def:"Simple official advice about what to eat to stay healthy.",defEs:"Consejos oficiales y sencillos sobre qué comer para estar sano.",
+ how:[["🍎","Fruits",""],["🥦","Veggies",""],["🍚","Grains",""],["🍗","Protein",""],["🥛","Dairy",""]],
+ pts:[["🍽️","They use a healthy plate as a picture."],["💧","Drink water instead of sugary drinks."],["🧂","Less salt, sugar and ultra-processed food."]],
+ ex:"The guidelines <mark>recommend</mark> fruits every day.",exEs:"Las guías recomiendan frutas todos los días.",
+ fun:["🌎","More than 100 countries have their own dietary guidelines!","¡Más de 100 países tienen sus propias guías alimentarias!"]},
+{e:["🍴","🥘","📊","😋"],cat:"Food & Intake",en:"Food intake",es:"Ingesta de alimentos",say:"FÚUD ÍN-teik",
+ def:"The amount and type of food a person eats.",defEs:"La cantidad y el tipo de comida que una persona come.",
+ how:[["📉","Too little","malnutrition"],["✅","Just right","health"],["📈","Too much","obesity"]],
+ pts:[["📝","Measured with a food diary or a 24-hour recall."],["🤒","Illness and sadness can reduce it."],["🧒","Children need small, frequent meals."]],
+ ex:"His food intake <mark>is</mark> low after surgery.",exEs:"Su ingesta de alimentos es baja después de la cirugía.",
+ fun:["⬅️","'Intake' comes from 'take in' → to take inside.","'Intake' viene de 'take in' → meter, tomar adentro."]},
+{e:["🧬","🌀","🩸","🍊"],cat:"Food & Intake",en:"Nutrient absorption",es:"Absorción de nutrientes",say:"NÚ-tri-ent ab-SÓRP-shon",
+ def:"When nutrients pass from the intestine into the blood.",defEs:"Cuando los nutrientes pasan del intestino a la sangre.",
+ how:[["🍽️","Eat",""],["🌀","Digest",""],["🧬","Absorb",""],["🩸","Blood",""]],
+ pts:[["🌀","It happens mainly in the small intestine."],["🍊","Vitamin C helps absorb iron."],["☕","Coffee with meals reduces iron absorption."]],
+ ex:"Absorption <mark>happens</mark> in the small intestine.",exEs:"La absorción ocurre en el intestino delgado.",
+ fun:["🎾","The small intestine has so many folds it could cover half a badminton court!","¡El intestino delgado tiene tantos pliegues que cubriría media cancha de bádminton!"]},
+{e:["🥫","🔬","🥭","📑"],cat:"Food & Intake",en:"Food composition",es:"Composición de los alimentos",say:"FÚUD kom-po-SÍ-shon",
+ def:"What a food contains: energy, protein, fat, carbs, vitamins and minerals.",defEs:"Lo que contiene un alimento: energía, proteína, grasa, carbohidratos, vitaminas y minerales.",
+ how:[["⚡","Energy",""],["🍗","Protein",""],["🥑","Fat",""],["🍞","Carbs",""],["🍊","Vitamins",""]],
+ pts:[["📖","Found in food composition tables."],["🏷️","Also on food labels."],["🧮","We use it to calculate menus."]],
+ ex:"We <mark>use</mark> the food composition table to plan menus.",exEs:"Usamos la tabla de composición para planear menús.",
+ fun:["🥭","Native fruits like borojó and açaí are in Colombian food tables!","¡Frutas nativas como el borojó y el açaí están en las tablas colombianas!"]},
+{e:["🌿","💊","🩺","🥄"],cat:"Clinical Care",en:"Nutritional therapy",es:"Terapia nutricional",say:"nu-TRÍ-sho-nal ZÉ-ra-pi",
+ def:"Using food, formulas or supplements as part of a medical treatment.",defEs:"Usar alimentos, fórmulas o suplementos como parte de un tratamiento médico.",
+ how:[["🥄","Oral","by mouth"],["🧪","Enteral","by tube"],["💉","Parenteral","by vein"]],
+ pts:[["⏱️","Starting early helps patients recover."],["🎯","It is personalized for each patient."],["🔁","It changes as the patient improves."]],
+ ex:"Nutritional therapy <mark>helps</mark> patients recover.",exEs:"La terapia nutricional ayuda a los pacientes a recuperarse.",
+ fun:["🏛️","Hippocrates said: 'Let food be thy medicine.'","Hipócrates dijo: 'Que el alimento sea tu medicina'."]},
+{e:["🥣","✋","🍽️","🥄"],cat:"Diet Planning",en:"Portion control",es:"Control de porciones",say:"PÓR-shon kon-TRÓUL",
+ def:"Eating the right amount of food: not too much, not too little.",defEs:"Comer la cantidad correcta: ni mucho, ni poco.",
+ how:[["✋","Palm","protein"],["✊","Fist","carbs"],["👍","Thumb","fat"],["🤲","Two hands","veggies"]],
+ pts:[["🍽️","Smaller plates help to eat less."],["🐢","Eat slowly: fullness takes about 20 minutes."],["🏷️","Read the serving size on the label."]],
+ ex:"Small plates <mark>help</mark> with portion control.",exEs:"Los platos pequeños ayudan a controlar las porciones.",
+ fun:["✋","Your hand is the perfect portion guide — it's always with you!","¡Tu mano es la guía perfecta de porciones: siempre la llevas contigo!"]},
+{e:["📋","🧂","🩺","🥣"],cat:"Diet Planning",en:"Therapeutic diet",es:"Dieta terapéutica",say:"ze-ra-PIÚ-tik DÁI-et",
+ def:"A special diet to treat or control a disease.",defEs:"Una dieta especial para tratar o controlar una enfermedad.",
+ how:[["🧂","Low-sodium","blood pressure"],["🍬","Diabetic","blood sugar"],["🥣","Soft","chewing"],["🫘","Renal","kidneys"]],
+ pts:[["👩‍⚕️","Prescribed by a doctor or nutritionist."],["✏️","Modifies texture, nutrients or energy."],["🔁","Adjusted as the patient changes."]],
+ ex:"The doctor <mark>prescribed</mark> a low-salt diet.",exEs:"El médico prescribió una dieta baja en sal.",
+ fun:["➖","Compound adjectives use a hyphen: low-sodium, high-protein, fat-free.","Los adjetivos compuestos llevan guion: low-sodium, high-protein, fat-free."]},
+{e:["⚠️","📉","📈","🧒"],cat:"Clinical Care",en:"Malnutrition",es:"Malnutrición",say:"mal-nu-TRÍ-shon",
+ def:"A health problem caused by eating too little, too much or badly.",defEs:"Un problema de salud por comer muy poco, demasiado o mal.",
+ how:[["📉","Undernutrition","too little"],["🍊","Micronutrient","deficiency"],["📈","Overweight","too much"]],
+ pts:[["🧒","Children and older adults are most at risk."],["🔍","Screening helps find it early."],["🧑‍⚕️","It delays recovery in hospitals."]],
+ ex:"We <mark>check</mark> every patient for malnutrition.",exEs:"Revisamos a cada paciente para detectar malnutrición.",
+ fun:["🔤","Prefix 'mal-' = bad. Mal + nutrition = bad nutrition.","Prefijo 'mal-' = malo. Mal + nutrition = mala nutrición."]},
+{e:["📏","⚖️","🧮","📊"],cat:"Body & Energy",en:"Body mass index (BMI)",es:"Índice de masa corporal (IMC)",say:"BÁ-di MÁS ÍN-dex",
+ def:"Weight divided by height squared: kg ÷ m².",defEs:"El peso dividido por la talla al cuadrado: kg ÷ m².",
+ how:[["🔵","< 18.5","thinness"],["🟢","18.5–24.9","normal"],["🟡","25–29.9","overweight"],["🔴","≥ 30","obesity"]],
+ pts:[["🧮","Example: 60 kg ÷ (1.60 m × 1.60 m) = 23.4"],["👩‍🦳","Values above are for adults."],["💪","It doesn't separate muscle from fat."]],
+ ex:"Her BMI <mark>is</mark> normal.",exEs:"Su IMC es normal.",
+ fun:["🕰️","BMI was created in the 1830s by a mathematician, Adolphe Quetelet!","¡El IMC lo creó un matemático, Adolphe Quetelet, en los años 1830!"]},
+{e:["🌾","🥦","🫘","🍎"],cat:"Food & Intake",en:"Dietary fiber",es:"Fibra dietética",say:"DÁI-a-te-ri FÁI-ber",
+ def:"The part of plant foods that your body cannot digest.",defEs:"La parte de los alimentos vegetales que tu cuerpo no puede digerir.",
+ how:[["💧","Soluble","oats, apple"],["🌾","Insoluble","whole grains"]],
+ pts:[["🚽","Helps the intestine work well."],["🩸","Helps control sugar and cholesterol."],["😌","Makes you feel full for longer."]],
+ ex:"Oats <mark>are</mark> rich in fiber.",exEs:"La avena es rica en fibra.",
+ fun:["🦠","Fiber is food for the good bacteria in your gut!","¡La fibra es el alimento de las bacterias buenas de tu intestino!"]},
+{e:["🌎","🧺","🏡","🌽"],cat:"Diet Planning",en:"Food security",es:"Seguridad alimentaria",say:"FÚUD si-KIÚ-ri-ti",
+ def:"When all people always have enough safe and healthy food.",defEs:"Cuando todas las personas tienen siempre suficiente comida sana y segura.",
+ how:[["🧺","Availability",""],["💵","Access",""],["🍽️","Consumption",""],["💪","Use",""]],
+ pts:[["🌱","Community gardens help."],["👩‍🌾","Supporting local farmers helps."],["⚠️","Food security ≠ food safety (inocuidad)."]],
+ ex:"Community gardens <mark>improve</mark> food security.",exEs:"Las huertas comunitarias mejoran la seguridad alimentaria.",
+ fun:["🌍","October 16 is World Food Day!","¡El 16 de octubre es el Día Mundial de la Alimentación!"]},
+{e:["🍞","🍗","🥑","⚡"],cat:"Food & Intake",en:"Macronutrients",es:"Macronutrientes",say:"ma-krou-NÚ-tri-ents",
+ def:"Nutrients we need in large amounts because they give us energy.",defEs:"Nutrientes que necesitamos en grandes cantidades porque nos dan energía.",
+ how:[["🍞","Carbs","4 kcal/g"],["🍗","Protein","4 kcal/g"],["🥑","Fat","9 kcal/g"]],
+ pts:[["🍞","Carbs: main energy source."],["🍗","Protein: builds and repairs."],["🥑","Fat: energy store and vitamins A, D, E, K."]],
+ ex:"A good meal <mark>has</mark> all three macronutrients.",exEs:"Una buena comida tiene los tres macronutrientes.",
+ fun:["🔤","Macro = big 🐘 · Micro = small 🐜 (vitamins and minerals).","Macro = grande · Micro = pequeño (vitaminas y minerales)."]}
+];
+
+/* BUILD */
+const deck=document.getElementById('deck');
+const sp=()=>`<span class="spark" style="top:4%;left:4%">✨</span><span class="spark" style="top:30%;right:2%;animation-delay:.8s">⭐</span><span class="spark" style="bottom:22%;left:1%;animation-delay:1.4s">💖</span>`;
+let h=`<section class="slide cover" style="--l:transparent"><span class="fl" style="left:7%;top:12%">🥑</span><span class="fl" style="right:7%;top:14%;animation-delay:1s">🍓</span><span class="fl" style="left:9%;bottom:14%;animation-delay:2s">🥦</span><span class="fl" style="right:9%;bottom:16%;animation-delay:.5s">🥕</span><span class="fl" style="left:45%;top:5%;animation-delay:1.5s;font-size:30px">✨</span>
+<div class="box"><div class="mascot">🍎</div><h1>Nutri<b>Words</b></h1>
+<div class="student"><small>ENGLISH STUDENT</small><strong>Daniela Melissa Quiroz González</strong><span>🥗 Nutrition and Dietetics</span><div class="teacher"><small>TEACHER</small><strong>Brayan Elles</strong></div></div>
+<div class="howto"><span>👆 Tap to open</span><span>👉 Swipe</span><span>🔊 Listen</span></div>
+<button class="start" id="startBtn">Let's start! ▶</button></div></section>
+
+<section class="slide rule" style="--bg:#FFF8E6;--l:#FFEFC2"><div class="box">${sp()}
+<div class="big-emo">⭐</div><h2>Easy Rule</h2><p class="sub">In English, the main word goes at the END</p>
+<div class="flip"><span class="w wa"><small>MAIN WORD</small>Gasto</span><span class="w wb"><small>DESCRIBES</small>energético</span></div>
+<div style="font-size:34px">⬇️</div>
+<div class="flip"><span class="w wb"><small>DESCRIBES</small>Energy</span><span class="w wa"><small>MAIN WORD</small>expenditure</span></div>
+<div class="hint">💡 Read the English from right to left</div></div></section>`;
+
+W.forEach((w,i)=>{const c=C[i%C.length];
+h+=`<section class="slide" style="--c:${c[0]};--l:${c[1]};--bg:${c[2]}"><div class="box">${sp()}
+ <div class="top"><span class="tag">${i+1} / ${W.length}</span><span class="tag l">${w.cat}</span></div>
+ <h2 class="title">${w.en}</h2>
+ <div class="es-t">🇪🇸 ${w.es}</div>
+ <div class="art"><div class="blob"></div><div class="m">${w.e[0]}</div><div class="s s1">${w.e[1]}</div><div class="s s2">${w.e[2]}</div><div class="s s3">${w.e[3]}</div></div>
+ <button class="say" data-t="${w.en.replace(/\s*\(.*\)/,'')}">🔊 ${w.say}</button>
+ <div class="concept"><div class="lbl">📖 CONCEPT</div><p>${w.def}</p><p class="sp">${w.defEs}</p></div>
+ <details class="d-how"><summary><span class="ic">🧩</span><span>See it<small>Visual map</small></span><span class="ar">▾</span></summary><div class="dc"><div class="steps">${w.how.map((s,k)=>`${k?'<span class="arrowr">•</span>':''}<div class="step"><b>${s[0]}</b>${s[1]}${s[2]?`<small>${s[2]}</small>`:''}</div>`).join('')}</div></div></details>
+ <details class="d-key"><summary><span class="ic">🔑</span><span>Key points<small>Go deeper</small></span><span class="ar">▾</span></summary><div class="dc"><div class="pts">${w.pts.map(p=>`<div class="pt"><b>${p[0]}</b><span>${p[1]}</span></div>`).join('')}</div></div></details>
+ <details class="d-ex"><summary><span class="ic">💬</span><span>Example<small>Use it in a sentence</small></span><span class="ar">▾</span></summary><div class="dc"><div class="exen">${w.ex}</div><div class="exes">🇪🇸 ${w.exEs}</div></div></details>
+ <details class="d-fun"><summary><span class="ic">💡</span><span>Fun fact<small>Did you know?</small></span><span class="ar">▾</span></summary><div class="dc"><div class="fun"><b>${w.fun[0]}</b><div>${w.fun[1]}<i>${w.fun[2]}</i></div></div></div></details>
+</div></section>`});
+
+h+=`<section class="slide end" style="--bg:#FFF5F9;--l:#FFDDEA"><div class="box">${sp()}<div class="big-emo">🎉</div><h2>Thank you!</h2>
+<div class="chips">${W.map(w=>`<span>${w.e[0]} ${w.en}</span>`).join('')}</div>
+<p>Daniela Melissa Quiroz González</p><p>🥗 Nutrition and Dietetics</p><button class="start" id="againBtn">↺ Start again</button></div></section>`;
+deck.innerHTML=h;
+
+/* NAV */
+const S=[...document.querySelectorAll('.slide')];let cur=0;
+function go(n){if(n<0||n>=S.length)return;S.forEach((s,i)=>{s.classList.toggle('on',i===n);s.classList.toggle('prev',i<n)});cur=n;S[n].scrollTop=0;
+ document.body.classList.toggle('cover-on',n===0);
+ document.getElementById('count').textContent=n+' / '+(S.length-1);
+ document.getElementById('prog').style.width=(n/(S.length-1)*100)+'%';
+ document.getElementById('prev').disabled=n===0;document.getElementById('next').disabled=n===S.length-1;}
+document.getElementById('startBtn').onclick=()=>go(1);
+document.getElementById('againBtn').onclick=()=>go(0);
+document.getElementById('next').onclick=()=>go(cur+1);
+document.getElementById('prev').onclick=()=>go(cur-1);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(cur+1);if(e.key==='ArrowLeft')go(cur-1)});
+let x0=null,y0=null;document.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
+document.addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5)go(cur+(dx<0?1:-1));x0=null});
+deck.addEventListener('click',e=>{const b=e.target.closest('.say');if(!b)return;try{const u=new SpeechSynthesisUtterance(b.dataset.t);u.lang='en-US';u.rate=.8;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(err){}});
+go(0);
+</script>
+</body>
+</html>
